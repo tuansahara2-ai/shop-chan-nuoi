@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiết Bị Chăn Nuôi - Kiến Thức & Vật Tư</title>
+    <!-- Tailwind CSS (Dùng CDN miễn phí để trang trí đẹp như web xịn) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (Icon miễn phí) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Tùy chỉnh thêm để giống Thegioididong */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f0f0; padding-bottom: 80px; }
+        .tgdd-header { background-color: #ffd400; color: #000; }
+        .section-header { border-left: 4px solid #d0021b; padding-left: 10px; font-weight: bold; text-transform: uppercase; margin: 20px 0 10px 0; }
+        .product-card { transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        /* Hiệu ứng rung cho nút Zalo */
+        @keyframes wiggle { 0%, 10% { transform: rotate(-15deg); } 20% { transform: rotate(15deg); } 30%, 100% { transform: rotate(0deg); } }
+        .zalo-shake { animation: wiggle 2s infinite; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HEADER (Đầu trang) -->
+    <header class="tgdd-header sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-2 py-3 flex items-center justify-between">
+            <!-- Logo -->
+            <div onclick="renderHome()" class="flex flex-col cursor-pointer">
+                <span class="font-black text-xl leading-none"><i class="fa-solid fa-piggy-bank"></i> KHO HEO</span>
+                <span class="text-xs font-semibold">Cẩm nang & Vật tư</span>
+            </div>
+
+            <!-- Tìm kiếm -->
+            <div class="flex-1 mx-4">
+                <div class="relative">
+                    <input type="text" id="searchInput" onkeyup="searchContent()" placeholder="Tìm bệnh heo, máng ăn..." class="w-full py-2 px-4 rounded-full border-none focus:outline-none text-sm text-gray-700 shadow-inner">
+                    <button class="absolute right-3 top-2 text-gray-500"><i class="fa-solid fa-search"></i></button>
+                </div>
+            </div>
+
+            <!-- Giỏ hàng (Icon tượng trưng) -->
+            <div class="text-2xl relative cursor-pointer" onclick="alert('Vui lòng chọn sản phẩm và nhắn Zalo để đặt hàng!')">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+        </div>
+
+        <!-- Menu Danh mục (Cuộn ngang trên mobile) -->
+        <nav class="bg-yellow-500 text-black text-sm font-semibold overflow-x-auto whitespace-nowrap py-2 px-2 shadow-inner">
+            <button onclick="filterCategory('all')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">Tất cả</button>
+            <button onclick="filterCategory('kythuat')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded"><i class="fa-solid fa-book-open"></i> Góc Kỹ Thuật</button>
+            <button onclick="filterCategory('choan')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">Hệ thống ăn</button>
+            <button onclick="filterCategory('uong')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">Hệ thống uống</button>
+            <button onclick="filterCategory('thuy')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">Dụng cụ thú y</button>
+        </nav>
+    </header>
+
+    <!-- 2. MAIN CONTENT (Nội dung chính) -->
+    <main id="app" class="container mx-auto px-2 pt-2">
+        <!-- Nội dung sẽ được Javascript nạp vào đây -->
+    </main>
+
+    <!-- 3. BOTTOM NAVIGATION (Thanh điều hướng dưới cùng giống App) -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 z-40 text-xs font-medium text-gray-600">
+        <button onclick="renderHome()" class="flex flex-col items-center text-yellow-600">
+            <i class="fa-solid fa-home text-lg"></i>
+            <span>Trang chủ</span>
+        </button>
+        <button onclick="filterCategory('kythuat')" class="flex flex-col items-center hover:text-yellow-600">
+            <i class="fa-solid fa-newspaper text-lg"></i>
+            <span>Tin tức</span>
+        </button>
+        <button onclick="openZalo()" class="flex flex-col items-center hover:text-blue-600">
+            <div class="bg-blue-500 text-white p-3 rounded-full -mt-8 shadow-lg border-4 border-white zalo-shake">
+                <i class="fa-solid fa-comment-dots text-xl"></i>
+            </div>
+            <span class="mt-1 font-bold text-blue-600">Chat Zalo</span>
+        </button>
+        <button onclick="filterCategory('shop')" class="flex flex-col items-center hover:text-yellow-600">
+            <i class="fa-solid fa-store text-lg"></i>
+            <span>Cửa hàng</span>
+        </button>
+        <button onclick="alert('Liên hệ: 09xx.xxx.xxx\nĐịa chỉ: Ngãi Giao, BRVT')" class="flex flex-col items-center hover:text-yellow-600">
+            <i class="fa-solid fa-user text-lg"></i>
+            <span>Liên hệ</span>
+        </button>
+    </div>
+
+    <!-- JAVASCRIPT (Bộ não xử lý logic) -->
+    <script>
+        // --- CẤU HÌNH DỮ LIỆU GIẢ LẬP (BẠN SỬA NỘI DUNG Ở ĐÂY) ---
+        
+        // 1. Danh sách Bài viết (Content Marketing - Kéo khách)
+        const articles = [
+            {
+                id: 1,
+                title: "Bí quyết úm heo con mùa lạnh không bị tiêu chảy",
+                category: "kythuat",
+                image: "https://file.hstatic.net/200000063852/article/um-heo-con_2a21a5789f214c7ca2c525f6e8c71932.jpg", // Ảnh minh họa
+                desc: "5 sai lầm thường gặp khi úm heo và cách khắc phục bằng đèn hồng ngoại.",
+                content: `
+                    <p class="mb-4">Mùa lạnh là thời điểm heo con dễ mắc bệnh đường ruột và hô hấp nhất. Để heo khỏe mạnh, bà con cần lưu ý:</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-2">
+                        <li><strong>Nhiệt độ:</strong> Luôn duy trì 32-34 độ C trong tuần đầu.</li>
+                        <li><strong>Sàn nuôi:</strong> Không để heo nằm trực tiếp xuống nền xi măng lạnh. Phải dùng sàn nhựa.</li>
+                    </ul>
+                    <p class="font-bold text-red-600 bg-yellow-100 p-2 rounded border border-yellow-300">
+                        <i class="fa-solid fa-lightbulb"></i> Lời khuyên: Nên sử dụng đèn hồng ngoại thay vì đèn sợi đốt để vừa sưởi ấm vừa diệt khuẩn.
+                    </p>
+                `,
+                relatedProducts: [101, 102] // ID sản phẩm liên quan (Đèn, Sàn)
+            },
+            {
+                id: 2,
+                title: "Cập nhật giá heo hơi hôm nay (Mới nhất)",
+                category: "kythuat",
+                image: "https://vnn-imgs-f.vgcloud.vn/2020/05/26/10/gia-heo-hoi-hom-nay-26-5-dong-loat-ha-nhiet.jpg",
+                desc: "Giá heo tại Bà Rịa - Vũng Tàu và Đồng Nai đang có biến động nhẹ.",
+                content: "Giá heo hơi hôm nay tại khu vực Miền Nam dao động từ 58.000 - 62.000 đ/kg...",
+                relatedProducts: []
+            },
+            {
+                id: 3,
+                title: "Hướng dẫn bấm nanh, cắt đuôi heo sơ sinh",
+                category: "kythuat",
+                image: "https://minhtrangvet.vn/wp-content/uploads/2021/04/cat-duoi-heo.jpg",
+                desc: "Kỹ thuật chuẩn giúp heo mau lành, không bị nhiễm trùng.",
+                content: "Nên bấm nanh và cắt đuôi trong vòng 24h sau sinh để heo ít bị stress...",
+                relatedProducts: [103, 104] // Kìm bấm
+            }
+        ];
+
+        // 2. Danh sách Sản phẩm (Để bán hàng)
+        const products = [
+            {
+                id: 101,
+                name: "Đèn Sưởi Hồng Ngoại Interheat",
+                price: 120000,
+                category: "thietbi",
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/den-hong-ngoai.jpg",
+                hot: true // Sản phẩm bán chạy
+            },
+            {
+                id: 102,
+                name: "Tấm Sàn Nhựa 40x55cm (Vàng)",
+                price: 65000,
+                category: "thietbi",
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2019/11/san-nhua-nuoi-heo.jpg",
+                hot: true
+            },
+            {
+                id: 103,
+                name: "Kìm Bấm Nanh Inox",
+                price: 45000,
+                category: "thuy",
+                image: "https://dungcuthuy.com/images/products/2019/06/18/large/kim-bam-nanh-heo-con-inox_1560844781.jpg",
+                hot: false
+            },
+            {
+                id: 104,
+                name: "Kéo Cắt Đuôi Heo Điện",
+                price: 350000,
+                category: "thietbi",
+                image: "https://dungcuchannuoi.net/wp-content/uploads/2021/03/kim-cat-duoi-heo-bang-dien.jpg",
+                hot: false
+            },
+            {
+                id: 105,
+                name: "Máng Ăn Tự Động 25kg",
+                price: 250000,
+                category: "choan",
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/mang-an-tu-dong-cho-heo.jpg",
+                hot: true
+            },
+            {
+                id: 106,
+                name: "Núm Uống Nước Inox 304",
+                price: 12000,
+                category: "uong",
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/num-uong-nuoc-cho-heo.jpg",
+                hot: false
+            }
+        ];
+
+        // Số Zalo của bạn (Thay số của bạn vào đây)
+        const MY_ZALO = "0900000000"; 
+
+        // --- HÀM XỬ LÝ GIAO DIỆN ---
+
+        const app = document.getElementById('app');
+
+        // Hàm format tiền Việt
+        const formatMoney = (amount) => {
+            return amount.toLocaleString('vi-VN', {style : 'currency', currency : 'VND'});
+        }
+
+        // 1. Render Trang Chủ (Kết hợp Tin tức & Sản phẩm)
+        function renderHome() {
+            let html = '';
+
+            // Banner Khuyến mãi
+            html += `
+                <div class="mb-4 rounded-lg overflow-hidden shadow-lg relative bg-gray-200 h-40">
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-red-500 to-yellow-500 text-white text-center p-4">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-2">KHUYẾN MÃI MÙA LẠNH</h2>
+                            <p class="text-sm">Mua 10 Đèn Sưởi - Tặng 1 Kìm Bấm</p>
+                            <button onclick="openZalo()" class="mt-3 bg-white text-red-600 px-4 py-1 rounded-full font-bold text-sm shadow">Nhắn Zalo Ngay</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Phần 1: Góc Kỹ Thuật (SEO Traffic)
+            html += `<h3 class="section-header text-gray-800">Cẩm Nang Chăn Nuôi (Mới)</h3>`;
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">`;
+            articles.forEach(art => {
+                html += `
+                    <div onclick="viewArticle(${art.id})" class="bg-white rounded-lg shadow-sm flex overflow-hidden cursor-pointer border border-gray-100 hover:shadow-md">
+                        <div class="w-1/3 h-24 bg-gray-200">
+                             <img src="${art.image}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <div class="w-2/3 p-2 flex flex-col justify-between">
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-2">${art.title}</h4>
+                            <span class="text-xs text-blue-500">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            // Phần 2: Sản Phẩm Bán Chạy (Sales)
+            html += `<h3 class="section-header text-gray-800">Sản Phẩm Bán Chạy</h3>`;
+            html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 pb-4">`;
+            products.filter(p => p.hot).forEach(p => {
+                html += createProductCard(p);
+            });
+            html += `</div>`;
+            
+            // Nút xem tất cả
+            html += `<div class="text-center mb-8"><button onclick="filterCategory('shop')" class="bg-white border border-gray-300 text-gray-600 px-6 py-2 rounded-full text-sm font-semibold hover:bg-gray-50">Xem tất cả sản phẩm</button></div>`;
+
+            app.innerHTML = html;
+            window.scrollTo(0,0);
+        }
+
+        // 2. Hàm tạo thẻ sản phẩm HTML
+        function createProductCard(p) {
+            return `
+                <div class="product-card bg-white p-2 rounded-lg border border-gray-200 text-center relative">
+                    <div class="h-32 w-full bg-gray-100 mb-2 rounded flex items-center justify-center overflow-hidden">
+                        <img src="${p.image}" class="h-full object-contain" onerror="this.src='https://via.placeholder.com/150'">
+                    </div>
+                    <h5 class="text-xs font-medium text-gray-700 h-8 line-clamp-2 overflow-hidden">${p.name}</h5>
+                    <div class="text-red-600 font-bold text-sm my-1">${formatMoney(p.price)}</div>
+                    <button onclick="openZaloProduct('${p.name}')" class="w-full bg-yellow-400 text-black text-xs font-bold py-1.5 rounded hover:bg-yellow-500">
+                        MUA NGAY
+                    </button>
+                </div>
+            `;
+        }
+
+        // 3. Xem chi tiết bài viết (Và lồng ghép sản phẩm)
+        function viewArticle(id) {
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+
+            // Tìm sản phẩm liên quan
+            const related = products.filter(p => art.relatedProducts.includes(p.id));
+            let relatedHtml = '';
+            if (related.length > 0) {
+                relatedHtml = `
+                    <div class="mt-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                        <h4 class="font-bold text-sm mb-2 text-red-600"><i class="fa-solid fa-cart-arrow-down"></i> SẢN PHẨM TRONG BÀI VIẾT:</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            ${related.map(p => createProductCard(p)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            app.innerHTML = `
+                <div class="bg-white p-4 rounded-lg shadow min-h-screen">
+                    <button onclick="renderHome()" class="mb-3 text-sm text-gray-500"><i class="fa-solid fa-chevron-left"></i> Quay lại</button>
+                    <h1 class="text-xl font-bold text-gray-800 mb-3">${art.title}</h1>
+                    <img src="${art.image}" class="w-full h-48 object-cover rounded mb-4 shadow-sm" onerror="this.src='https://via.placeholder.com/300'">
+                    
+                    <div class="prose text-gray-700 text-sm leading-relaxed">
+                        ${art.content}
+                    </div>
+
+                    ${relatedHtml}
+
+                    <div class="mt-8 text-center">
+                        <p class="text-sm font-bold mb-2">Bà con cần tư vấn thêm về kỹ thuật?</p>
+                        <button onclick="openZalo()" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg animate-pulse">
+                            <i class="fa-solid fa-comment"></i> Chat Zalo Với Kỹ Sư
+                        </button>
+                    </div>
+                </div>
+            `;
+            window.scrollTo(0,0);
+        }
+
+        // 4. Lọc danh mục / Tìm kiếm
+        function filterCategory(cat) {
+            if (cat === 'all') { renderHome(); return; }
+            if (cat === 'shop') {
+                 // Hiển thị tất cả sản phẩm
+                let html = `<h3 class="section-header text-gray-800">Tất cả sản phẩm</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;
+                products.forEach(p => html += createProductCard(p));
+                html += `</div>`;
+                app.innerHTML = html;
+                return;
+            }
+            if (cat === 'kythuat') {
+                // Hiển thị list bài viết
+                 let html = `<h3 class="section-header text-gray-800">Góc Kỹ Thuật</h3><div class="space-y-3">`;
+                articles.forEach(art => {
+                    html += `
+                        <div onclick="viewArticle(${art.id})" class="bg-white p-2 rounded shadow flex gap-3 cursor-pointer">
+                            <img src="${art.image}" class="w-24 h-24 object-cover rounded bg-gray-200" onerror="this.src='https://via.placeholder.com/150'">
+                            <div>
+                                <h4 class="font-bold text-sm">${art.title}</h4>
+                                <p class="text-xs text-gray-500 mt-1 line-clamp-2">${art.desc}</p>
+                                <span class="text-xs text-blue-500 mt-2 block">Đọc tiếp...</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                app.innerHTML = html;
+                return;
+            }
+
+            // Lọc sản phẩm theo danh mục con
+            const filtered = products.filter(p => p.category === cat);
+            let html = `<h3 class="section-header text-gray-800">Danh mục: ${cat}</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;
+            if(filtered.length === 0) html += `<p class="text-center w-full col-span-2 text-gray-500">Đang cập nhật...</p>`;
+            filtered.forEach(p => html += createProductCard(p));
+            html += `</div>`;
+            app.innerHTML = html;
+        }
+
+        function searchContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if(query.length < 2) return;
+
+            // Tìm cả bài viết và sản phẩm
+            const foundArts = articles.filter(a => a.title.toLowerCase().includes(query));
+            const foundProds = products.filter(p => p.name.toLowerCase().includes(query));
+
+            let html = `<h3 class="section-header">Kết quả tìm kiếm: "${query}"</h3>`;
+            
+            if (foundArts.length > 0) {
+                html += `<p class="font-bold text-sm mb-2 text-blue-600">Bài viết (${foundArts.length})</p><div class="grid grid-cols-1 gap-2 mb-4">`;
+                foundArts.forEach(art => {
+                    html += `<div onclick="viewArticle(${art.id})" class="bg-white p-2 rounded border cursor-pointer hover:bg-gray-50">${art.title}</div>`
+                });
+                html += `</div>`;
+            }
+
+            if (foundProds.length > 0) {
+                html += `<p class="font-bold text-sm mb-2 text-red-600">Sản phẩm (${foundProds.length})</p><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;
+                foundProds.forEach(p => html += createProductCard(p));
+                html += `</div>`;
+            }
+
+            if(foundArts.length === 0 && foundProds.length === 0) {
+                html += `<div class="text-center text-gray-500 py-10">Không tìm thấy kết quả nào.</div>`;
+            }
+
+            app.innerHTML = html;
+        }
+
+        // 5. Mở Zalo
+        function openZalo() {
+            // Trên điện thoại nó sẽ mở app Zalo
+            window.location.href = `https://zalo.me/${MY_ZALO}`;
+        }
+        function openZaloProduct(productName) {
+            // Soạn sẵn tin nhắn mua hàng
+            const msg = `Tôi muốn mua: ${productName}. Tư vấn giá giúp tôi!`;
+            // Mã hóa tin nhắn để đưa vào link
+            // Zalo đôi khi không hỗ trợ pre-fill text qua link web, nhưng đây là cách chuẩn nhất.
+            window.location.href = `https://zalo.me/${MY_ZALO}`; 
+            // Hoặc copy tin nhắn vào clipboard
+            alert(`Đã copy nội dung: "${productName}". Hãy dán vào chat Zalo nhé!`);
+        }
+
+        // --- KHỞI CHẠY ---
+        renderHome();
+
+    </script>
+</body>
+</html>
