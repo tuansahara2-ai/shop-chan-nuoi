@@ -1,0 +1,405 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="vi">\
+<head>\
+    <meta charset="UTF-8">\
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+    <title>Thi\uc0\u7871 t B\u7883  Ch\u259 n Nu\'f4i - Ki\u7871 n Th\u7913 c & V\u7853 t T\u432 </title>\
+    <!-- Tailwind CSS (D\'f9ng CDN mi\uc0\u7877 n ph\'ed \u273 \u7875  trang tr\'ed \u273 \u7865 p nh\u432  web x\u7883 n) -->\
+    <script src="https://cdn.tailwindcss.com"></script>\
+    <!-- Font Awesome (Icon mi\uc0\u7877 n ph\'ed) -->\
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">\
+    \
+    <style>\
+        /* T\'f9y ch\uc0\u7881 nh th\'eam \u273 \u7875  gi\u7889 ng Thegioididong */\
+        body \{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f0f0; padding-bottom: 80px; \}\
+        .tgdd-header \{ background-color: #ffd400; color: #000; \}\
+        .section-header \{ border-left: 4px solid #d0021b; padding-left: 10px; font-weight: bold; text-transform: uppercase; margin: 20px 0 10px 0; \}\
+        .product-card \{ transition: transform 0.2s; \}\
+        .product-card:hover \{ transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); \}\
+        .line-clamp-2 \{ display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; \}\
+        /* Hi\uc0\u7879 u \u7913 ng rung cho n\'fat Zalo */\
+        @keyframes wiggle \{ 0%, 10% \{ transform: rotate(-15deg); \} 20% \{ transform: rotate(15deg); \} 30%, 100% \{ transform: rotate(0deg); \} \}\
+        .zalo-shake \{ animation: wiggle 2s infinite; \}\
+    </style>\
+</head>\
+<body>\
+\
+    <!-- 1. HEADER (\uc0\u272 \u7847 u trang) -->\
+    <header class="tgdd-header sticky top-0 z-50 shadow-md">\
+        <div class="container mx-auto px-2 py-3 flex items-center justify-between">\
+            <!-- Logo -->\
+            <div onclick="renderHome()" class="flex flex-col cursor-pointer">\
+                <span class="font-black text-xl leading-none"><i class="fa-solid fa-piggy-bank"></i> KHO HEO</span>\
+                <span class="text-xs font-semibold">C\uc0\u7849 m nang & V\u7853 t t\u432 </span>\
+            </div>\
+\
+            <!-- T\'ecm ki\uc0\u7871 m -->\
+            <div class="flex-1 mx-4">\
+                <div class="relative">\
+                    <input type="text" id="searchInput" onkeyup="searchContent()" placeholder="T\'ecm b\uc0\u7879 nh heo, m\'e1ng \u259 n..." class="w-full py-2 px-4 rounded-full border-none focus:outline-none text-sm text-gray-700 shadow-inner">\
+                    <button class="absolute right-3 top-2 text-gray-500"><i class="fa-solid fa-search"></i></button>\
+                </div>\
+            </div>\
+\
+            <!-- Gi\uc0\u7887  h\'e0ng (Icon t\u432 \u7907 ng tr\u432 ng) -->\
+            <div class="text-2xl relative cursor-pointer" onclick="alert('Vui l\'f2ng ch\uc0\u7885 n s\u7843 n ph\u7849 m v\'e0 nh\u7855 n Zalo \u273 \u7875  \u273 \u7863 t h\'e0ng!')">\
+                <i class="fa-solid fa-cart-shopping"></i>\
+            </div>\
+        </div>\
+\
+        <!-- Menu Danh m\uc0\u7909 c (Cu\u7897 n ngang tr\'ean mobile) -->\
+        <nav class="bg-yellow-500 text-black text-sm font-semibold overflow-x-auto whitespace-nowrap py-2 px-2 shadow-inner">\
+            <button onclick="filterCategory('all')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">T\uc0\u7845 t c\u7843 </button>\
+            <button onclick="filterCategory('kythuat')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded"><i class="fa-solid fa-book-open"></i> G\'f3c K\uc0\u7929  Thu\u7853 t</button>\
+            <button onclick="filterCategory('choan')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">H\uc0\u7879  th\u7889 ng \u259 n</button>\
+            <button onclick="filterCategory('uong')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">H\uc0\u7879  th\u7889 ng u\u7889 ng</button>\
+            <button onclick="filterCategory('thuy')" class="inline-block px-3 py-1 hover:bg-yellow-600 rounded">D\uc0\u7909 ng c\u7909  th\'fa y</button>\
+        </nav>\
+    </header>\
+\
+    <!-- 2. MAIN CONTENT (N\uc0\u7897 i dung ch\'ednh) -->\
+    <main id="app" class="container mx-auto px-2 pt-2">\
+        <!-- N\uc0\u7897 i dung s\u7869  \u273 \u432 \u7907 c Javascript n\u7841 p v\'e0o \u273 \'e2y -->\
+    </main>\
+\
+    <!-- 3. BOTTOM NAVIGATION (Thanh \uc0\u273 i\u7873 u h\u432 \u7899 ng d\u432 \u7899 i c\'f9ng gi\u7889 ng App) -->\
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 z-40 text-xs font-medium text-gray-600">\
+        <button onclick="renderHome()" class="flex flex-col items-center text-yellow-600">\
+            <i class="fa-solid fa-home text-lg"></i>\
+            <span>Trang ch\uc0\u7911 </span>\
+        </button>\
+        <button onclick="filterCategory('kythuat')" class="flex flex-col items-center hover:text-yellow-600">\
+            <i class="fa-solid fa-newspaper text-lg"></i>\
+            <span>Tin t\uc0\u7913 c</span>\
+        </button>\
+        <button onclick="openZalo()" class="flex flex-col items-center hover:text-blue-600">\
+            <div class="bg-blue-500 text-white p-3 rounded-full -mt-8 shadow-lg border-4 border-white zalo-shake">\
+                <i class="fa-solid fa-comment-dots text-xl"></i>\
+            </div>\
+            <span class="mt-1 font-bold text-blue-600">Chat Zalo</span>\
+        </button>\
+        <button onclick="filterCategory('shop')" class="flex flex-col items-center hover:text-yellow-600">\
+            <i class="fa-solid fa-store text-lg"></i>\
+            <span>C\uc0\u7917 a h\'e0ng</span>\
+        </button>\
+        <button onclick="alert('Li\'ean h\uc0\u7879 : 09xx.xxx.xxx\\n\u272 \u7883 a ch\u7881 : Ng\'e3i Giao, BRVT')" class="flex flex-col items-center hover:text-yellow-600">\
+            <i class="fa-solid fa-user text-lg"></i>\
+            <span>Li\'ean h\uc0\u7879 </span>\
+        </button>\
+    </div>\
+\
+    <!-- JAVASCRIPT (B\uc0\u7897  n\'e3o x\u7917  l\'fd logic) -->\
+    <script>\
+        // --- C\uc0\u7844 U H\'ccNH D\u7918  LI\u7878 U GI\u7842  L\u7852 P (B\u7840 N S\u7916 A N\u7896 I DUNG \u7902  \u272 \'c2Y) ---\
+        \
+        // 1. Danh s\'e1ch B\'e0i vi\uc0\u7871 t (Content Marketing - K\'e9o kh\'e1ch)\
+        const articles = [\
+            \{\
+                id: 1,\
+                title: "B\'ed quy\uc0\u7871 t \'fam heo con m\'f9a l\u7841 nh kh\'f4ng b\u7883  ti\'eau ch\u7843 y",\
+                category: "kythuat",\
+                image: "https://file.hstatic.net/200000063852/article/um-heo-con_2a21a5789f214c7ca2c525f6e8c71932.jpg", // \uc0\u7842 nh minh h\u7885 a\
+                desc: "5 sai l\uc0\u7847 m th\u432 \u7901 ng g\u7863 p khi \'fam heo v\'e0 c\'e1ch kh\u7855 c ph\u7909 c b\u7857 ng \u273 \'e8n h\u7891 ng ngo\u7841 i.",\
+                content: `\
+                    <p class="mb-4">M\'f9a l\uc0\u7841 nh l\'e0 th\u7901 i \u273 i\u7875 m heo con d\u7877  m\u7855 c b\u7879 nh \u273 \u432 \u7901 ng ru\u7897 t v\'e0 h\'f4 h\u7845 p nh\u7845 t. \u272 \u7875  heo kh\u7887 e m\u7841 nh, b\'e0 con c\u7847 n l\u432 u \'fd:</p>\
+                    <ul class="list-disc pl-5 mb-4 space-y-2">\
+                        <li><strong>Nhi\uc0\u7879 t \u273 \u7897 :</strong> Lu\'f4n duy tr\'ec 32-34 \u273 \u7897  C trong tu\u7847 n \u273 \u7847 u.</li>\
+                        <li><strong>S\'e0n nu\'f4i:</strong> Kh\'f4ng \uc0\u273 \u7875  heo n\u7857 m tr\u7921 c ti\u7871 p xu\u7889 ng n\u7873 n xi m\u259 ng l\u7841 nh. Ph\u7843 i d\'f9ng s\'e0n nh\u7921 a.</li>\
+                    </ul>\
+                    <p class="font-bold text-red-600 bg-yellow-100 p-2 rounded border border-yellow-300">\
+                        <i class="fa-solid fa-lightbulb"></i> L\uc0\u7901 i khuy\'ean: N\'ean s\u7917  d\u7909 ng \u273 \'e8n h\u7891 ng ngo\u7841 i thay v\'ec \u273 \'e8n s\u7907 i \u273 \u7889 t \u273 \u7875  v\u7915 a s\u432 \u7903 i \u7845 m v\u7915 a di\u7879 t khu\u7849 n.\
+                    </p>\
+                `,\
+                relatedProducts: [101, 102] // ID s\uc0\u7843 n ph\u7849 m li\'ean quan (\u272 \'e8n, S\'e0n)\
+            \},\
+            \{\
+                id: 2,\
+                title: "C\uc0\u7853 p nh\u7853 t gi\'e1 heo h\u417 i h\'f4m nay (M\u7899 i nh\u7845 t)",\
+                category: "kythuat",\
+                image: "https://vnn-imgs-f.vgcloud.vn/2020/05/26/10/gia-heo-hoi-hom-nay-26-5-dong-loat-ha-nhiet.jpg",\
+                desc: "Gi\'e1 heo t\uc0\u7841 i B\'e0 R\u7883 a - V\u361 ng T\'e0u v\'e0 \u272 \u7891 ng Nai \u273 ang c\'f3 bi\u7871 n \u273 \u7897 ng nh\u7865 .",\
+                content: "Gi\'e1 heo h\uc0\u417 i h\'f4m nay t\u7841 i khu v\u7921 c Mi\u7873 n Nam dao \u273 \u7897 ng t\u7915  58.000 - 62.000 \u273 /kg...",\
+                relatedProducts: []\
+            \},\
+            \{\
+                id: 3,\
+                title: "H\uc0\u432 \u7899 ng d\u7851 n b\u7845 m nanh, c\u7855 t \u273 u\'f4i heo s\u417  sinh",\
+                category: "kythuat",\
+                image: "https://minhtrangvet.vn/wp-content/uploads/2021/04/cat-duoi-heo.jpg",\
+                desc: "K\uc0\u7929  thu\u7853 t chu\u7849 n gi\'fap heo mau l\'e0nh, kh\'f4ng b\u7883  nhi\u7877 m tr\'f9ng.",\
+                content: "N\'ean b\uc0\u7845 m nanh v\'e0 c\u7855 t \u273 u\'f4i trong v\'f2ng 24h sau sinh \u273 \u7875  heo \'edt b\u7883  stress...",\
+                relatedProducts: [103, 104] // K\'ecm b\uc0\u7845 m\
+            \}\
+        ];\
+\
+        // 2. Danh s\'e1ch S\uc0\u7843 n ph\u7849 m (\u272 \u7875  b\'e1n h\'e0ng)\
+        const products = [\
+            \{\
+                id: 101,\
+                name: "\uc0\u272 \'e8n S\u432 \u7903 i H\u7891 ng Ngo\u7841 i Interheat",\
+                price: 120000,\
+                category: "thietbi",\
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/den-hong-ngoai.jpg",\
+                hot: true // S\uc0\u7843 n ph\u7849 m b\'e1n ch\u7841 y\
+            \},\
+            \{\
+                id: 102,\
+                name: "T\uc0\u7845 m S\'e0n Nh\u7921 a 40x55cm (V\'e0ng)",\
+                price: 65000,\
+                category: "thietbi",\
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2019/11/san-nhua-nuoi-heo.jpg",\
+                hot: true\
+            \},\
+            \{\
+                id: 103,\
+                name: "K\'ecm B\uc0\u7845 m Nanh Inox",\
+                price: 45000,\
+                category: "thuy",\
+                image: "https://dungcuthuy.com/images/products/2019/06/18/large/kim-bam-nanh-heo-con-inox_1560844781.jpg",\
+                hot: false\
+            \},\
+            \{\
+                id: 104,\
+                name: "K\'e9o C\uc0\u7855 t \u272 u\'f4i Heo \u272 i\u7879 n",\
+                price: 350000,\
+                category: "thietbi",\
+                image: "https://dungcuchannuoi.net/wp-content/uploads/2021/03/kim-cat-duoi-heo-bang-dien.jpg",\
+                hot: false\
+            \},\
+            \{\
+                id: 105,\
+                name: "M\'e1ng \uc0\u258 n T\u7921  \u272 \u7897 ng 25kg",\
+                price: 250000,\
+                category: "choan",\
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/mang-an-tu-dong-cho-heo.jpg",\
+                hot: true\
+            \},\
+            \{\
+                id: 106,\
+                name: "N\'fam U\uc0\u7889 ng N\u432 \u7899 c Inox 304",\
+                price: 12000,\
+                category: "uong",\
+                image: "https://thietbichannuoi.vn/wp-content/uploads/2018/01/num-uong-nuoc-cho-heo.jpg",\
+                hot: false\
+            \}\
+        ];\
+\
+        // S\uc0\u7889  Zalo c\u7911 a b\u7841 n (Thay s\u7889  c\u7911 a b\u7841 n v\'e0o \u273 \'e2y)\
+        const MY_ZALO = "0900000000"; \
+\
+        // --- H\'c0M X\uc0\u7916  L\'dd GIAO DI\u7878 N ---\
+\
+        const app = document.getElementById('app');\
+\
+        // H\'e0m format ti\uc0\u7873 n Vi\u7879 t\
+        const formatMoney = (amount) => \{\
+            return amount.toLocaleString('vi-VN', \{style : 'currency', currency : 'VND'\});\
+        \}\
+\
+        // 1. Render Trang Ch\uc0\u7911  (K\u7871 t h\u7907 p Tin t\u7913 c & S\u7843 n ph\u7849 m)\
+        function renderHome() \{\
+            let html = '';\
+\
+            // Banner Khuy\uc0\u7871 n m\'e3i\
+            html += `\
+                <div class="mb-4 rounded-lg overflow-hidden shadow-lg relative bg-gray-200 h-40">\
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-red-500 to-yellow-500 text-white text-center p-4">\
+                        <div>\
+                            <h2 class="text-2xl font-bold mb-2">KHUY\uc0\u7870 N M\'c3I M\'d9A L\u7840 NH</h2>\
+                            <p class="text-sm">Mua 10 \uc0\u272 \'e8n S\u432 \u7903 i - T\u7863 ng 1 K\'ecm B\u7845 m</p>\
+                            <button onclick="openZalo()" class="mt-3 bg-white text-red-600 px-4 py-1 rounded-full font-bold text-sm shadow">Nh\uc0\u7855 n Zalo Ngay</button>\
+                        </div>\
+                    </div>\
+                </div>\
+            `;\
+\
+            // Ph\uc0\u7847 n 1: G\'f3c K\u7929  Thu\u7853 t (SEO Traffic)\
+            html += `<h3 class="section-header text-gray-800">C\uc0\u7849 m Nang Ch\u259 n Nu\'f4i (M\u7899 i)</h3>`;\
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">`;\
+            articles.forEach(art => \{\
+                html += `\
+                    <div onclick="viewArticle($\{art.id\})" class="bg-white rounded-lg shadow-sm flex overflow-hidden cursor-pointer border border-gray-100 hover:shadow-md">\
+                        <div class="w-1/3 h-24 bg-gray-200">\
+                             <img src="$\{art.image\}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">\
+                        </div>\
+                        <div class="w-2/3 p-2 flex flex-col justify-between">\
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-2">$\{art.title\}</h4>\
+                            <span class="text-xs text-blue-500">Xem chi ti\uc0\u7871 t <i class="fa-solid fa-arrow-right"></i></span>\
+                        </div>\
+                    </div>\
+                `;\
+            \});\
+            html += `</div>`;\
+\
+            // Ph\uc0\u7847 n 2: S\u7843 n Ph\u7849 m B\'e1n Ch\u7841 y (Sales)\
+            html += `<h3 class="section-header text-gray-800">S\uc0\u7843 n Ph\u7849 m B\'e1n Ch\u7841 y</h3>`;\
+            html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-2 pb-4">`;\
+            products.filter(p => p.hot).forEach(p => \{\
+                html += createProductCard(p);\
+            \});\
+            html += `</div>`;\
+            \
+            // N\'fat xem t\uc0\u7845 t c\u7843 \
+            html += `<div class="text-center mb-8"><button onclick="filterCategory('shop')" class="bg-white border border-gray-300 text-gray-600 px-6 py-2 rounded-full text-sm font-semibold hover:bg-gray-50">Xem t\uc0\u7845 t c\u7843  s\u7843 n ph\u7849 m</button></div>`;\
+\
+            app.innerHTML = html;\
+            window.scrollTo(0,0);\
+        \}\
+\
+        // 2. H\'e0m t\uc0\u7841 o th\u7867  s\u7843 n ph\u7849 m HTML\
+        function createProductCard(p) \{\
+            return `\
+                <div class="product-card bg-white p-2 rounded-lg border border-gray-200 text-center relative">\
+                    <div class="h-32 w-full bg-gray-100 mb-2 rounded flex items-center justify-center overflow-hidden">\
+                        <img src="$\{p.image\}" class="h-full object-contain" onerror="this.src='https://via.placeholder.com/150'">\
+                    </div>\
+                    <h5 class="text-xs font-medium text-gray-700 h-8 line-clamp-2 overflow-hidden">$\{p.name\}</h5>\
+                    <div class="text-red-600 font-bold text-sm my-1">$\{formatMoney(p.price)\}</div>\
+                    <button onclick="openZaloProduct('$\{p.name\}')" class="w-full bg-yellow-400 text-black text-xs font-bold py-1.5 rounded hover:bg-yellow-500">\
+                        MUA NGAY\
+                    </button>\
+                </div>\
+            `;\
+        \}\
+\
+        // 3. Xem chi ti\uc0\u7871 t b\'e0i vi\u7871 t (V\'e0 l\u7891 ng gh\'e9p s\u7843 n ph\u7849 m)\
+        function viewArticle(id) \{\
+            const art = articles.find(a => a.id === id);\
+            if (!art) return;\
+\
+            // T\'ecm s\uc0\u7843 n ph\u7849 m li\'ean quan\
+            const related = products.filter(p => art.relatedProducts.includes(p.id));\
+            let relatedHtml = '';\
+            if (related.length > 0) \{\
+                relatedHtml = `\
+                    <div class="mt-6 bg-yellow-50 p-3 rounded-lg border border-yellow-200">\
+                        <h4 class="font-bold text-sm mb-2 text-red-600"><i class="fa-solid fa-cart-arrow-down"></i> S\uc0\u7842 N PH\u7848 M TRONG B\'c0I VI\u7870 T:</h4>\
+                        <div class="grid grid-cols-2 gap-2">\
+                            $\{related.map(p => createProductCard(p)).join('')\}\
+                        </div>\
+                    </div>\
+                `;\
+            \}\
+\
+            app.innerHTML = `\
+                <div class="bg-white p-4 rounded-lg shadow min-h-screen">\
+                    <button onclick="renderHome()" class="mb-3 text-sm text-gray-500"><i class="fa-solid fa-chevron-left"></i> Quay l\uc0\u7841 i</button>\
+                    <h1 class="text-xl font-bold text-gray-800 mb-3">$\{art.title\}</h1>\
+                    <img src="$\{art.image\}" class="w-full h-48 object-cover rounded mb-4 shadow-sm" onerror="this.src='https://via.placeholder.com/300'">\
+                    \
+                    <div class="prose text-gray-700 text-sm leading-relaxed">\
+                        $\{art.content\}\
+                    </div>\
+\
+                    $\{relatedHtml\}\
+\
+                    <div class="mt-8 text-center">\
+                        <p class="text-sm font-bold mb-2">B\'e0 con c\uc0\u7847 n t\u432  v\u7845 n th\'eam v\u7873  k\u7929  thu\u7853 t?</p>\
+                        <button onclick="openZalo()" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg animate-pulse">\
+                            <i class="fa-solid fa-comment"></i> Chat Zalo V\uc0\u7899 i K\u7929  S\u432 \
+                        </button>\
+                    </div>\
+                </div>\
+            `;\
+            window.scrollTo(0,0);\
+        \}\
+\
+        // 4. L\uc0\u7885 c danh m\u7909 c / T\'ecm ki\u7871 m\
+        function filterCategory(cat) \{\
+            if (cat === 'all') \{ renderHome(); return; \}\
+            if (cat === 'shop') \{\
+                 // Hi\uc0\u7875 n th\u7883  t\u7845 t c\u7843  s\u7843 n ph\u7849 m\
+                let html = `<h3 class="section-header text-gray-800">T\uc0\u7845 t c\u7843  s\u7843 n ph\u7849 m</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;\
+                products.forEach(p => html += createProductCard(p));\
+                html += `</div>`;\
+                app.innerHTML = html;\
+                return;\
+            \}\
+            if (cat === 'kythuat') \{\
+                // Hi\uc0\u7875 n th\u7883  list b\'e0i vi\u7871 t\
+                 let html = `<h3 class="section-header text-gray-800">G\'f3c K\uc0\u7929  Thu\u7853 t</h3><div class="space-y-3">`;\
+                articles.forEach(art => \{\
+                    html += `\
+                        <div onclick="viewArticle($\{art.id\})" class="bg-white p-2 rounded shadow flex gap-3 cursor-pointer">\
+                            <img src="$\{art.image\}" class="w-24 h-24 object-cover rounded bg-gray-200" onerror="this.src='https://via.placeholder.com/150'">\
+                            <div>\
+                                <h4 class="font-bold text-sm">$\{art.title\}</h4>\
+                                <p class="text-xs text-gray-500 mt-1 line-clamp-2">$\{art.desc\}</p>\
+                                <span class="text-xs text-blue-500 mt-2 block">\uc0\u272 \u7885 c ti\u7871 p...</span>\
+                            </div>\
+                        </div>\
+                    `;\
+                \});\
+                html += `</div>`;\
+                app.innerHTML = html;\
+                return;\
+            \}\
+\
+            // L\uc0\u7885 c s\u7843 n ph\u7849 m theo danh m\u7909 c con\
+            const filtered = products.filter(p => p.category === cat);\
+            let html = `<h3 class="section-header text-gray-800">Danh m\uc0\u7909 c: $\{cat\}</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;\
+            if(filtered.length === 0) html += `<p class="text-center w-full col-span-2 text-gray-500">\uc0\u272 ang c\u7853 p nh\u7853 t...</p>`;\
+            filtered.forEach(p => html += createProductCard(p));\
+            html += `</div>`;\
+            app.innerHTML = html;\
+        \}\
+\
+        function searchContent() \{\
+            const query = document.getElementById('searchInput').value.toLowerCase();\
+            if(query.length < 2) return;\
+\
+            // T\'ecm c\uc0\u7843  b\'e0i vi\u7871 t v\'e0 s\u7843 n ph\u7849 m\
+            const foundArts = articles.filter(a => a.title.toLowerCase().includes(query));\
+            const foundProds = products.filter(p => p.name.toLowerCase().includes(query));\
+\
+            let html = `<h3 class="section-header">K\uc0\u7871 t qu\u7843  t\'ecm ki\u7871 m: "$\{query\}"</h3>`;\
+            \
+            if (foundArts.length > 0) \{\
+                html += `<p class="font-bold text-sm mb-2 text-blue-600">B\'e0i vi\uc0\u7871 t ($\{foundArts.length\})</p><div class="grid grid-cols-1 gap-2 mb-4">`;\
+                foundArts.forEach(art => \{\
+                    html += `<div onclick="viewArticle($\{art.id\})" class="bg-white p-2 rounded border cursor-pointer hover:bg-gray-50">$\{art.title\}</div>`\
+                \});\
+                html += `</div>`;\
+            \}\
+\
+            if (foundProds.length > 0) \{\
+                html += `<p class="font-bold text-sm mb-2 text-red-600">S\uc0\u7843 n ph\u7849 m ($\{foundProds.length\})</p><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;\
+                foundProds.forEach(p => html += createProductCard(p));\
+                html += `</div>`;\
+            \}\
+\
+            if(foundArts.length === 0 && foundProds.length === 0) \{\
+                html += `<div class="text-center text-gray-500 py-10">Kh\'f4ng t\'ecm th\uc0\u7845 y k\u7871 t qu\u7843  n\'e0o.</div>`;\
+            \}\
+\
+            app.innerHTML = html;\
+        \}\
+\
+        // 5. M\uc0\u7903  Zalo\
+        function openZalo() \{\
+            // Tr\'ean \uc0\u273 i\u7879 n tho\u7841 i n\'f3 s\u7869  m\u7903  app Zalo\
+            window.location.href = `https://zalo.me/$\{MY_ZALO\}`;\
+        \}\
+        function openZaloProduct(productName) \{\
+            // So\uc0\u7841 n s\u7861 n tin nh\u7855 n mua h\'e0ng\
+            const msg = `T\'f4i mu\uc0\u7889 n mua: $\{productName\}. T\u432  v\u7845 n gi\'e1 gi\'fap t\'f4i!`;\
+            // M\'e3 h\'f3a tin nh\uc0\u7855 n \u273 \u7875  \u273 \u432 a v\'e0o link\
+            // Zalo \uc0\u273 \'f4i khi kh\'f4ng h\u7895  tr\u7907  pre-fill text qua link web, nh\u432 ng \u273 \'e2y l\'e0 c\'e1ch chu\u7849 n nh\u7845 t.\
+            window.location.href = `https://zalo.me/$\{MY_ZALO\}`; \
+            // Ho\uc0\u7863 c copy tin nh\u7855 n v\'e0o clipboard\
+            alert(`\uc0\u272 \'e3 copy n\u7897 i dung: "$\{productName\}". H\'e3y d\'e1n v\'e0o chat Zalo nh\'e9!`);\
+        \}\
+\
+        // --- KH\uc0\u7902 I CH\u7840 Y ---\
+        renderHome();\
+\
+    </script>\
+</body>\
+</html>}
